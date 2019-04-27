@@ -55,9 +55,16 @@ module Simpler
       @request.params
     end
 
-    def render(template)
-      @request.env['simpler.template'] = template
+    def render(resource)
+      if resource.is_a?(Hash)
+        type, value = resource.first
+        @request.env['simpler.template_type'] = type
+        @request.env['simpler.value'] = value
+        headers['Content-Type'] = 'text/plain' if type == :plain
+      else
+        @request.env['simpler.template'] = template
+      end
     end
-
   end
 end
+
