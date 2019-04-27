@@ -29,8 +29,8 @@ module Simpler
       @response.status = code.to_i
     end
 
-    def headers(name, value)
-      @response[name.to_s] = value.to_s
+    def headers
+      @response
     end
 
     def extract_name
