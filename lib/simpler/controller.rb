@@ -29,6 +29,10 @@ module Simpler
       @response.status = code.to_i
     end
 
+    def headers(name, value)
+      @response[name.to_s] = value.to_s
+    end
+
     def extract_name
       self.class.name.match('(?<name>.+)Controller')[:name].downcase
     end
