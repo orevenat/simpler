@@ -52,7 +52,7 @@ module Simpler
     end
 
     def params
-      @request.params
+      @request.params.update(@request.env['simpler.route_params'])
     end
 
     def render(resource)

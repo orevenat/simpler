@@ -29,12 +29,13 @@ module Simpler
     end
 
     def call(env)
-      route = @router.route_for(env)
+      route, route_params = @router.route_for(env)
 
       raise NotFoundError unless route
 
       controller = route.controller.new(env)
       action = route.action
+      env['simpler.route_params'] = route_params
 
       make_response(controller, action)
     rescue NotFoundError
