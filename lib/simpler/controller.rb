@@ -12,12 +12,13 @@ module Simpler
     end
 
     def make_response(action)
+      @request.env['simpler.request'] = @request
       @request.env['simpler.controller'] = self
       @request.env['simpler.action'] = action
 
       set_default_headers
       send(action)
-      write_response
+      write_response if @response.successful?
 
       @response.finish
     end
