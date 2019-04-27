@@ -63,7 +63,7 @@ module Simpler
         @request.env['simpler.value'] = value
         headers['Content-Type'] = 'text/plain' if type == :plain
       else
-        @request.env['simpler.template'] = template
+        @request.env['simpler.template'] = resource
       end
     end
   end
