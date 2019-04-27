@@ -4,8 +4,14 @@ class TestsController < Simpler::Controller
     @time = Time.now
   end
 
-  def create
+  def show
+  end
 
+  def plain
+    render plain: 'message'
+  end
+
+  def create
   end
 
 end

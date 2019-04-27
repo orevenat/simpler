@@ -12,17 +12,27 @@ module Simpler
     end
 
     def make_response(action)
+      @request.env['simpler.request'] = @request
       @request.env['simpler.controller'] = self
       @request.env['simpler.action'] = action
 
       set_default_headers
       send(action)
-      write_response
+      write_response if @response.successful?
 
       @response.finish
     end
 
     private
+
+
+    def status(code)
+      @response.status = code.to_i
+    end
+
+    def headers
+      @response
+    end
 
     def extract_name
       self.class.name.match('(?<name>.+)Controller')[:name].downcase
@@ -43,12 +53,19 @@ module Simpler
     end
 
     def params
-      @request.params
+      @request.params.update(@request.env['simpler.route_params'])
     end
 
-    def render(template)
-      @request.env['simpler.template'] = template
+    def render(resource)
+      if resource.is_a?(Hash)
+        type, value = resource.first
+        @request.env['simpler.template_type'] = type
+        @request.env['simpler.value'] = value
+        headers['Content-Type'] = 'text/plain' if type == :plain
+      else
+        @request.env['simpler.template'] = resource
+      end
     end
-
   end
 end
+

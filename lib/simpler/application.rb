@@ -5,6 +5,8 @@ require_relative 'router'
 require_relative 'controller'
 
 module Simpler
+  class NotFoundError < StandardError; end
+
   class Application
 
     include Singleton
@@ -27,11 +29,17 @@ module Simpler
     end
 
     def call(env)
-      route = @router.route_for(env)
+      route, route_params = @router.route_for(env)
+
+      raise NotFoundError unless route
+
       controller = route.controller.new(env)
       action = route.action
+      env['simpler.route_params'] = route_params
 
       make_response(controller, action)
+    rescue NotFoundError
+      make_404_response
     end
 
     private
@@ -54,5 +62,10 @@ module Simpler
       controller.make_response(action)
     end
 
+    def make_404_response
+      response = Rack::Response.new
+      response.status = 404
+      response.finish
+    end
   end
 end
